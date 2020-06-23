@@ -3,11 +3,17 @@ import re
 #Function to pull out all lines containing the word vet
 def regexline(list, exp):
     output = []
+    expU = exp.upper()
+    expl = exp.lower()
+    expT = exp.capitalize()
     for i in list:
-        if len(re.findall(exp, i)) > 0:
+        if len(re.findall(expU, i)) > 0:
+            output.append(i)
+        if len(re.findall(expl, i)) > 0:
+            output.append(i)
+        if len(re.findall(expT, i)) > 0:
             output.append(i)
     return output
-
 
 #import file
 file = open(r'M:\PDF Data Extraction\Vet Record Examples (1)\Vet Record Text Output\pdf_1.txt', "r")
