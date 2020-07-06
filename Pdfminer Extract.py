@@ -4,6 +4,7 @@ from pdfminer3.layout import LAParams
 from pdfminer3.pdfpage import PDFPage
 from io import StringIO
 from datetime import datetime as dt
+import func_timeout as to
 
 def convert_pdf_to_txt(path):
     rsrcmgr = PDFResourceManager()
@@ -29,16 +30,26 @@ def convert_pdf_to_txt(path):
     return text
 
 #file paths
-file_name = '1'
+file_name = '4'
 file_path = r'M:\PDF Data Extraction\Vet Record Examples (1)\Vet Record Examples\{}.pdf'.format(file_name)
 
 #date and time
 now = dt.now()
 dt_string = now.strftime("%Y%m%d%H%M")
 
+#timeout
+try:
+    text = to.func_timeout(5,convert_pdf_to_txt,args=(file_path,))
+    print(text)
+except:
+    print("Conversion could not complete within 5 seconds and was terminated.\n")
+
+
 #print(convert_pdf_to_txt(file_path))
 # create and write to text file
-f = open(r'M:\PDF Data Extraction\Vet Record Examples (1)\Vet Record Text Output\{}_{}.txt'.format(file_name, dt_string), 'w')
-f.write = (convert_pdf_to_txt(file_path))
-f.close()
+#f = open(r'M:\PDF Data Extraction\Vet Record Examples (1)\Vet Record Text Output\{}_{}.txt'.format(file_name, dt_string), 'w+')
+#text = convert_pdf_to_txt(file_path)
+#f.write(text)
+#f.close()
+#print(text)
 
