@@ -5,6 +5,8 @@ from pdfminer3.pdfpage import PDFPage
 from io import StringIO
 from datetime import datetime as dt
 import os
+import func_timeout as to
+import re
 
 #Function to convert pdf to text file
 def convert_pdf_to_txt(path):
@@ -43,12 +45,41 @@ filelist = os.listdir(input_path)
 for i in filelist:
     path = input_path + '\{}'.format(i)
     file = os.path.splitext(i)[0]
-    f = open(
-        r'\\dtdata\user$\AdamWilliams\PDF Data Extraction\Vet Record Examples (1)\Vet Record Text Multiple Output\{}_{}.txt'.format(file,dt_string),
-        'w+')
-    text = convert_pdf_to_txt(path)
-    f.write(text)
-    f.close()
+
+    try:
+        text = to.func_timeout(15, convert_pdf_to_txt, args=(path,))
+        x = re.search("[a-zA-Z]", text)
+        
+        if x == None:
+            print('{} Error - Empty Document'.format(file))
+            pass
+        else:
+            # NOTE - This UnicodeEncodeError Try/Except is a bodge until I can sort out encoding
+            try:
+                f = open(r'M:\PDF Data Extraction\Vet Record Examples (1)\Vet Record Text Output\{}_{}.txt'.format(file,
+                                                                                                                   dt_string),
+                         'w+')
+                f.write(text)
+                f.close()
+                print('{} Success'.format(file))
+            except UnicodeEncodeError:
+                print('{} Error - Unicode Encode Error'.format(file))
+    except:
+        print('{} conversion timed out'.format(file))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
