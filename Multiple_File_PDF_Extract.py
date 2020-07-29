@@ -38,15 +38,31 @@ def file_move(file_list, destination):
     for file in file_list:
         si.move(file, destination)
 
+#Function to move files to error list
+def error_append(file_list, input_path, error_list):
+    for file in file_list:
+        error_list.append(input_path + '\\' + file)
+
+#Function to test file name format
+def name_format(file_list):
+    To_be_converted = []
+    Not_to_be_converted = []
+    for file in file_list:
+        if re.search('O\d+\sV\d+\sD\d+\s\dyrs\s\dm', file) != None:
+            To_be_converted.append(file)
+        else:
+            Not_to_be_converted.append(file)
+    return To_be_converted, Not_to_be_converted
+
 
 #date and time
 now = dt.now()
 dt_string = now.strftime("%Y%m%d%H%M")
 
-#File Paths
+#File Paths - Change these if you run somewhere else
 Drive = 'M:\\'
 input_path = os.path.join(Drive,'PDF Data Extraction','Vet Record Examples (1)','Vet Record Examples')
-output_path = os.path.join(Drive, 'PDF Data Extraction', 'Vet Record Examples (1)', 'Vet Record Text Multiple Output')
+output_path = os.path.join(Drive, 'PDF Data Extraction', 'Vet Record Examples (1)', 'Vet Record Text Multiple Output','Processed Vet Records')
 error_path = os.path.join(Drive, 'PDF Data Extraction', 'Vet Record Examples (1)', 'Vet Record Text Multiple Output\Error Folder')
 success_path = os.path.join(Drive, 'PDF Data Extraction', 'Vet Record Examples (1)', 'Vet Record Text Multiple Output\Success Folder')
 filelist = os.listdir(input_path)
@@ -55,7 +71,11 @@ filelist = os.listdir(input_path)
 #error checking
 error_list = []
 success_list = []
-for i in filelist:
+#Check file name has correct format
+conversion_list = (name_format(filelist))[0]
+error_append((name_format(filelist))[1], input_path, error_list)
+
+for i in conversion_list:
     path = input_path + '\{}'.format(i)
     file = os.path.splitext(i)[0]
     try:
