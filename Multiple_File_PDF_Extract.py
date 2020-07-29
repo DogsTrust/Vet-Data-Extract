@@ -38,11 +38,6 @@ def file_move(file_list, destination):
     for file in file_list:
         si.move(file, destination)
 
-#Function to move files to error list
-def error_append(file_list, input_path, error_list):
-    for file in file_list:
-        error_list.append(input_path + '\\' + file)
-
 #Function to test file name format
 def name_format(file_list):
     To_be_converted = []
@@ -54,6 +49,11 @@ def name_format(file_list):
             Not_to_be_converted.append(file)
     return To_be_converted, Not_to_be_converted
 
+#Function to move files to error list
+def error_append(file_list, input_path, error_list):
+    for file in file_list:
+        error_list.append(input_path + '\\' + file)
+        print('{} Error - Incorrect File Name Format'.format(file))
 
 #date and time
 now = dt.now()
