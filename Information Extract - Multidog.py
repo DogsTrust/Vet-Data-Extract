@@ -38,6 +38,7 @@ unique_vetids = df.VetId.unique()
 
 #column names to be used in df_main
 col_names = df.columns
+
 #dataframe to hold most recent vet record for each vet and dog id
 df_main = pd.DataFrame(columns = col_names)
 for dogid in unique_dogids:
@@ -60,30 +61,41 @@ for i in range(length):
     title_search = 'O'+col_ids[1]+' V'+col_ids[2]+' D'+col_ids[0]+' '+col_ids[3]
     titles.append(title_search)
 
-
-#
-# #Search file for key term
-# for file in search_file:
-#Find most recent file in processed files
-search_files = []
-for title in titles:
-    for file in file_list:
-        if re.search(title_search, file) != None:
-            search_files.append(re.search(title_search, file).string)
+#Search for most recent files in processed files
+file_search = []
+#look through processed files
+for file in file_list:
+    #check against most recent titles
+    for title in titles:
+        if re.search(title, str(file)) != None:
+            file_search.append(file)
 
 
-        for search_file in search_files:
-            #list of found phrases
-            phrase_find = []
-            # File shit
-            path = processed_files + '\\' + file
-            f = open(path)
-            file_string = f.read()
-            #Split file into lines
-            file_split = file_string.splitlines()
-            #Return all instances of search phrase
-            phrase_find.append(regexline(file_split, str(search_term)))
-            f.close()
+df_out = pd.DataFrame(columns=['DogID','OwnerID','VetID','Dog Age','Phrase Date','Search Phrase'])
 
-print(phrase_find)
+# list of found phrases
+phrase_find = []
+for item in file_search:
+    # File shit
+    path = processed_files + '\\' + item
+    f = open(path)
+    file_string = f.read()
+    #Split file into lines
+    file_split = file_string.splitlines()
+    #
+    Dog_ID = (re.search('D\d{4}', item).group())[1:]
+    Owner_ID = (re.search('O\d{4}',item).group())[1:]
+    Vet_ID = (re.search('V\d{3}', item).group())[1:]
+    Dog_Age = re.search('\d+yrs\s\d+m',item).group()
+    Term_Found = regexline(file_split, str(search_term))
+    for Term in Term_Found:
+        #Return all instances of search phrase
+        add_to_master = [Dog_ID, Owner_ID, Vet_ID, Dog_Age, ' ', Term]
+        print(add_to_master)
+    f.close()
+
+
+
+
+
 
